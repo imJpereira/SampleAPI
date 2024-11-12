@@ -10,11 +10,19 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.atitus.apisample.dtos.SignupDTO;
 import br.edu.atitus.apisample.entities.TypeUser;
 import br.edu.atitus.apisample.entities.UserEntity;
+import br.edu.atitus.apisample.services.UserService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {	
 	
+	private final UserService SERVICE;
+	
+	public AuthController(UserService service) {
+		super();
+		this.SERVICE = service;
+	}
+
 	@PostMapping("/signup")
 	public ResponseEntity<UserEntity> createNewUser(@RequestBody SignupDTO signup) {
 		
