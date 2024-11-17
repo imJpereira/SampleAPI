@@ -1,7 +1,9 @@
 package br.edu.atitus.apisample.controllers;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,26 +18,34 @@ import br.edu.atitus.apisample.services.UserService;
 @RequestMapping("/auth")
 public class AuthController {	
 	
-	private final UserService SERVICE;
+	private final UserService service;
 	
 	public AuthController(UserService service) {
 		super();
-		this.SERVICE = service;
+		this.service = service;
 	}
-
+	
 	@PostMapping("/signup")
-	public ResponseEntity<UserEntity> createNewUser(@RequestBody SignupDTO signup) {
+	public ResponseEntity<UserEntity> createNewUser(@RequestBody SignupDTO signup) throws Exception {
 		
-		//TODO converter DTIOEntity
+		//Convertee DTIOEntity
 		UserEntity newUser = new UserEntity();
 		BeanUtils.copyProperties(signup, newUser);
 		
 		newUser.setType(TypeUser.COMMON);
 		
 		
-		//TODO invocar método camada service
-		//TODO retornar entidade User
+		// Invoca método camada service
+		service.save(newUser);
 		
-		return ResponseEntity.ok(newUser);
+		
+		// Retornar entidade User
+		return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String> handlerMethod(Exception ex){
+		String msg = ex.getMessage().replaceAll("\r\n", "");
+		return ResponseEntity.badRequest().body(msg);
 	}
 }

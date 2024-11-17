@@ -2,18 +2,30 @@ package br.edu.atitus.apisample.entities;
 
 import java.util.UUID;
 
-public class UserEntity {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "user_tb")
+public class UserEntity {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
 	private String name;
 	private String email;
+	
+	@JsonIgnore
 	private String password;
-	private TypeUser type;
-	
-	
+	private TypeUser type;	
+
 	
 	//Getters e Setters
-
 	public UUID getId() {
 		return id;
 	}
